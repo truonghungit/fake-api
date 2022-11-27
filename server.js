@@ -79,7 +79,7 @@ server.post("/login", async (req, res) => {
     const validPassword = await bcrypt.compare(password, user.password);
 
     if (validPassword) {
-      const accessToken = jwt.sign(payload, SECRET_KEY, {
+      const accessToken = jwt.sign({ email }, SECRET_KEY, {
         expiresIn: EXPIRES_IN,
       });
 
@@ -90,6 +90,7 @@ server.post("/login", async (req, res) => {
       res.status(status).json({ status, message });
     }
   } catch (error) {
+    console.log("error ", error);
     res.status(500).json({ error: "Server Error" });
   }
 });
@@ -119,7 +120,7 @@ server.post("/register", async (req, res) => {
 
     fs.writeFileSync("./accounts.json", JSON.stringify(accounts, null, 2));
 
-    res.status(200);
+    res.status(200).json({ message: "created" });
   } catch (err) {
     res.status(500).json({ error: "Server Error" });
   }
